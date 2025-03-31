@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 from sqlalchemy import (
     String,
     DateTime,
@@ -6,12 +7,16 @@ from sqlalchemy import (
     ForeignKey,
     Text,
     Boolean,
+    Enum as SqlEnum,
 )
 from sqlalchemy.orm import DeclarativeBase, relationship
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.conf import constants
 
+class UserRole(str, Enum):
+    USER = "USER"
+    ADMIN = "ADMIN"
 
 class Base(DeclarativeBase):
     pass
@@ -43,6 +48,9 @@ class User(Base):
     confirmed: Mapped[bool] = mapped_column(Boolean, default=False)
     refresh_tokens: Mapped[list["RefreshToken"]] = relationship(
         "RefreshToken", back_populates="user"
+    )
+    role: Mapped[UserRole] = mapped_column(
+        SqlEnum(UserRole), default=UserRole.USER, nullable=False
     )
 
 

@@ -16,6 +16,7 @@ from src.core.depend_service import (
     get_auth_service,
     get_user_service,
     get_current_user,
+    get_admin_user,  # Added get_admin_user import
 )
 from src.core.email_token import get_email_from_token
 from src.entity.models import User
@@ -80,9 +81,12 @@ async def request_email(
 @router.patch("/avatar", response_model=UserResponse)
 async def update_avatar_user(
     file: UploadFile = File(),
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_admin_user),  
     user_service: UserService = Depends(get_user_service),
 ):
+    """
+    Update user avatar. Only administrators can perform this action.
+    """
     avatar_url = UploadFileService(
         settings.CLD_NAME, settings.CLD_API_KEY, settings.CLD_API_SECRET
     ).upload_file(file, user.username)
@@ -90,4 +94,3 @@ async def update_avatar_user(
     user = await user_service.update_avatar_url(user.email, avatar_url)
 
     return user
-
