@@ -8,7 +8,7 @@ def test_get_me(client, get_token):
         redis_mock.exists.return_value = False
         token = get_token
         headers = {"Authorization": f"Bearer {token}"}
-        response = client.get("api/v1/users/me", headers=headers)
+        response = client.get("api/users/me", headers=headers)
         assert response.status_code == 200, response.text
         data = response.json()
         assert data["username"] == test_user["username"]
@@ -31,7 +31,7 @@ def test_update_avatar_user(mock_upload_file, client, get_token):
         file_data = {"file": ("avatar.jpg", b"fake image content", "image/jpeg")}
 
         # Відправка PATCH-запиту
-        response = client.patch("/api/v1/users/avatar", headers=headers, files=file_data)
+        response = client.patch("/api/users/avatar", headers=headers, files=file_data)
 
         # Перевірка, що запит був успішним
         assert response.status_code == 200, response.text

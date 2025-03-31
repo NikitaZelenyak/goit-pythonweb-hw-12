@@ -19,7 +19,7 @@ from src.schemas.user import UserCreate
 import json
 
 redis_client = redis.from_url(settings.REDIS_URL)
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
 
 class AuthService:
@@ -61,7 +61,7 @@ class AuthService:
                 detail="Incorrect username or password",
             )
 
-        await redis_client.setex(f"user:{username}", 3600, json.dumps(user.to_dict()))
+        await redis_client.setex(f"user:{username}", 3600, json.dumps(user))
         return user
 
     async def register_user(self, user_data: UserCreate) -> User:
@@ -145,7 +145,7 @@ class AuthService:
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Could not validate credentials",
             )
-        await redis_client.setex(f"user:{username}", 3600, json.dumps(user.to_dict()))
+        await redis_client.setex(f"user:{username}", 3600, json.dumps(user))
         return user
 
     async def validate_refresh_token(self, token: str) -> User:

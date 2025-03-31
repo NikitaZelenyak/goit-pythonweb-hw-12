@@ -16,6 +16,7 @@ from src.conf import constants
 
 
 class UserRole(str, Enum):
+
     USER = "USER"
     ADMIN = "ADMIN"
 

@@ -24,6 +24,7 @@ libgravatar = "^1.0.4"
 fastapi-mail = "^1.4.2"
 sphinx = "^8.2.3"
 sphinx-rtd-theme = "^3.0.2"
+pyjwt = "^2.10.1"
 
 
 [tool.poetry.group.dev.dependencies]

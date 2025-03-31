@@ -100,7 +100,7 @@ def test_refresh_token(client):
     # access_token = response.json().get("access_token")
     refresh_token = response.json().get("refresh_token")
 
-    response = client.post("api/v1/auth/refresh", json={"refresh_token": refresh_token})
+    response = client.post("api/auth/refresh", json={"refresh_token": refresh_token})
     assert response.status_code == 200, response.text
     data = response.json()
     assert "access_token" in data
@@ -122,6 +122,6 @@ def test_logout(client):
         data = response.json()
         access_token = data.get("access_token")
         refresh_token = data.get("refresh_token")
-        response = client.post("api/v1/auth/logout", json={"refresh_token": refresh_token},
+        response = client.post("api/auth/logout", json={"refresh_token": refresh_token},
                                headers={"Authorization": f"Bearer {access_token}"})
         assert response.status_code == 204, response.text
