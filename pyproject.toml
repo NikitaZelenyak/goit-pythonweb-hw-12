@@ -28,7 +28,21 @@ sphinx-rtd-theme = "^3.0.2"
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
+pytest = "^8.3.5"
+pytest-asyncio = "^0.26.0"
+aiosqlite = "^0.21.0"
+pytest-cov = "^6.0.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = "--doctest-modules -W ignore::DeprecationWarning -W ignore::UserWarning"
+testpaths = ["tests"]
+pythonpath = "."
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::UserWarning"
+]
+asyncio_default_fixture_loop_scope = "function"
