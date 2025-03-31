@@ -64,6 +64,30 @@ class User(Base):
         SqlEnum(UserRole), default=UserRole.USER, nullable=False
     )
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "email": self.email,
+            "hash_password": self.hash_password,
+            "avatar": self.avatar,
+            "confirmed": self.confirmed,
+            "role": self.role.value,
+
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "User":
+        user = cls()
+        user.id = data["id"]
+        user.username = data["username"]
+        user.email = data["email"]
+        user.hash_password = data["hash_password"]
+        user.avatar = data["avatar"]
+        user.confirmed = data["confirmed"]
+        user.role = UserRole(data["role"])
+        return user
+
 
 class RefreshToken(Base):
     __tablename__ = "refresh_tokens"
