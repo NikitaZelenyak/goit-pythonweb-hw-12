@@ -37,7 +37,7 @@ def test_repeat_register_email(client, monkeypatch):
     monkeypatch.setattr("src.services.email.send_email", mock_send_email)
     user_copy = user_data.copy()
     user_copy["username"] = "kot_leapold"
-    response = client.post("api/v1/auth/register", json=user_copy)
+    response = client.post("api/auth/register", json=user_copy)
     assert response.status_code == 409, response.text
     data = response.json()
     assert data["detail"] == "Email already exists"
@@ -108,7 +108,6 @@ def test_refresh_token(client):
     assert "refresh_token" in data
     assert data["token_type"] == "bearer"
     assert data["refresh_token"] != refresh_token
-    # assert data["access_token"] != access_token
 
 
 def test_logout(client):
