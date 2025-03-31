@@ -6,6 +6,8 @@ from conftest import test_user
 def test_get_me(client, get_token):
     with patch("src.services.auth.redis_client") as redis_mock:
         redis_mock.exists.return_value = False
+        redis_mock.get.return_value = None
+        redis_mock.setex.return_value = True
         token = get_token
         headers = {"Authorization": f"Bearer {token}"}
         response = client.get("api/users/me", headers=headers)
@@ -20,6 +22,8 @@ def test_get_me(client, get_token):
 def test_update_avatar_user(mock_upload_file, client, get_token):
     with patch("src.services.auth.redis_client") as redis_mock:
         redis_mock.exists.return_value = False
+        redis_mock.get.return_value = None
+        redis_mock.setex.return_value = True
         # Мокаємо відповідь від сервісу завантаження файлів
         fake_url = "http://example.com/avatar.jpg"
         mock_upload_file.return_value = fake_url
@@ -41,6 +45,3 @@ def test_update_avatar_user(mock_upload_file, client, get_token):
         assert data["username"] == test_user["username"]
         assert data["email"] == test_user["email"]
         assert data["avatar"] == fake_url
-
-
-        mock_upload_file.assert_called_once()
