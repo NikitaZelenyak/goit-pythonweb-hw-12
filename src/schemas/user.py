@@ -21,3 +21,17 @@ class UserResponse(UserBase):
 
 class UserUpdateAvatar(BaseModel):
     avatar: str = Field(..., description="Avatar URL")
+
+
+class RequestPasswordReset(BaseModel):
+    email: EmailStr = Field(..., description="Email address for password reset")
+
+
+class ResetPassword(BaseModel):
+    token: str = Field(..., description="Password reset token")
+    new_password: str = Field(
+        ...,
+        min_length=6,
+        max_length=12,
+        description="New password"
+    )
