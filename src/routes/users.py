@@ -90,9 +90,6 @@ async def update_avatar_user(
     user: User = Depends(get_admin_user),
     user_service: UserService = Depends(get_user_service),
 ):
-    """
-    Update user avatar. Only administrators can perform this action.
-    """
     avatar_url = UploadFileService(
         settings.CLD_NAME, settings.CLD_API_KEY, settings.CLD_API_SECRET
     ).upload_file(file, user.username)
@@ -108,9 +105,6 @@ async def request_password_reset(
     request: Request,
     user_service: UserService = Depends(get_user_service),
 ):
-    """
-    Request a password reset token. The token will be sent to the user's email.
-    """
     token = await user_service.create_password_reset_token(body.email)
     if token:
         reset_url = f"{str(request.base_url)}users/reset-password/{token}"

@@ -16,7 +16,7 @@ from src.entity.models import User
 from src.repository.refresh_token_repository import RefreshTokenRepository
 from src.repository.user_repository import UserRepository
 from src.schemas.user import UserCreate
-
+import json
 
 redis_client = redis.from_url(settings.REDIS_URL)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
@@ -61,6 +61,7 @@ class AuthService:
                 detail="Incorrect username or password",
             )
 
+        await redis_client.setex(f"user:{username}", 3600, json.dumps(user.to_dict()))
         return user
 
     async def register_user(self, user_data: UserCreate) -> User:
@@ -132,12 +133,19 @@ class AuthService:
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Could not validate credentials",
             )
+        cached_user = await redis_client.get(f"user:{username}")
+        if cached_user:
+            user_data = json.loads(cached_user)
+            return User(**user_data)
+
         user = await self.user_repository.get_by_username(username)
+
         if user is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Could not validate credentials",
             )
+        await redis_client.setex(f"user:{username}", 3600, json.dumps(user.to_dict()))
         return user
 
     async def validate_refresh_token(self, token: str) -> User:
